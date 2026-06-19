@@ -3,7 +3,8 @@ package com.invict.cash_api.cash_api.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.invict.cash_api.cash_api.model.Lancamento;
+import com.invict.cash_api.cash_api.repository.lancamento.LancamentoRepositoryQuery;
 
-public interface LancamentoRepository extends JpaRepository<Lancamento, Long> {
+public interface LancamentoRepository extends JpaRepository<Lancamento, Long>, LancamentoRepositoryQuery {
 
 }

@@ -1,10 +1,11 @@
 package com.invict.cash_api.cash_api.resource;
 
 import java.net.URI;
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,6 +19,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.invict.cash_api.cash_api.model.Lancamento;
 import com.invict.cash_api.cash_api.repository.LancamentoRepository;
+import com.invict.cash_api.cash_api.repository.filter.LancamentoFilter;
 import com.invict.cash_api.cash_api.service.LancamentoService;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -33,8 +35,8 @@ public class LancamentoResource {
     private LancamentoService lancamentoService;
 
     @GetMapping
-    public List<Lancamento> listar(){
-        return lancamentoRepository.findAll();  
+    public Page<Lancamento> pesquisar(LancamentoFilter lancamentoFilter, Pageable pageable) {
+        return lancamentoRepository.filtrar(lancamentoFilter, pageable);
     }
 
     @PostMapping
