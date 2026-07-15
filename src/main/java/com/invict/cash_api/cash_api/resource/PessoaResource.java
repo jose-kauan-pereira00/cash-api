@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,11 +35,13 @@ public class PessoaResource {
 	private PessoaService pessoaService;
 
 	@GetMapping
+	@PreAuthorize("permitAll()")
 	public List<Pessoa> listar(){
 		return pessoaRepository.findAll();
 	}
 
 	@PostMapping
+	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_PESSOA')")
 	public ResponseEntity<Pessoa> criar(@Validated @RequestBody Pessoa pessoa, HttpServletResponse response){
 		Pessoa pessoaSalva = pessoaRepository.save(pessoa);
 
@@ -51,12 +54,14 @@ public class PessoaResource {
 	}
 	
 	@GetMapping("/{codigo}")
+	@PreAuthorize("permitAll()")
 	public Optional<Pessoa> buscarPeloCodigo(@PathVariable Long codigo){
 		return pessoaRepository.findById(codigo);
 	}
 
 
 	@DeleteMapping("/{codigo}")
+	@PreAuthorize("hasAuthority('ROLE_REMOVER_PESSOA')")
 	public ResponseEntity<Void> remover(@PathVariable Long codigo) {
 		Optional<Pessoa> pessoaOptional = pessoaRepository.findById(codigo);
 		if (pessoaOptional.isPresent()) {
@@ -68,6 +73,7 @@ public class PessoaResource {
 	}
 
 	@PutMapping("/{codigo}")
+	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_PESSOA')")
 	public ResponseEntity<Object> atualizar(@PathVariable Long codigo, @Validated @RequestBody Pessoa pessoa) {
 		Pessoa pessoaSalva = pessoaService.atualizar(codigo, pessoa);
 
@@ -75,6 +81,7 @@ public class PessoaResource {
 	}
 	
 	@PutMapping("/{codigo}/ativo")
+	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_PESSOA')")
 	public void atualizarPropriedadeAtivo(@PathVariable Long codigo, @RequestBody Boolean ativo){
 		pessoaService.atualizarPropriedadeAtivo(codigo, ativo);
 	}
