@@ -19,7 +19,6 @@ public class CorsFilter implements Filter {
 
     private final CashMoneyApiProperty cashMoneyApiProperty;
 
-    // Ao declarar o construtor assim, o Spring injeta a dependência ANTES de rodar o escopo dele
     public CorsFilter(CashMoneyApiProperty cashMoneyApiProperty) {
         this.cashMoneyApiProperty = cashMoneyApiProperty;
     }
@@ -31,7 +30,6 @@ public class CorsFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest) req;
         HttpServletResponse response = (HttpServletResponse) resp;
 
-        // Pegamos a origem permitida dinamicamente da propriedade injetada
         String originPermitida = cashMoneyApiProperty.getOriginPermitida();
 
         response.setHeader("Access-Control-Allow-Origin", originPermitida);
