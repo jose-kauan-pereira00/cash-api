@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,11 +36,19 @@ public class LancamentoResource {
     private LancamentoService lancamentoService;
 
     @GetMapping
+    @PreAuthorize("permitAll()")
     public Page<Lancamento> pesquisar(LancamentoFilter lancamentoFilter, Pageable pageable) {
         return lancamentoRepository.filtrar(lancamentoFilter, pageable);
     }
 
+    @GetMapping(params = "resumo")
+    @PreAuthorize("permitAll()")
+    public Page<Lancamento> resumir(LancamentoFilter lancamentoFilter, Pageable pageable) {
+        return lancamentoRepository.filtrar(lancamentoFilter, pageable);
+    }
+
     @PostMapping
+    @PreAuthorize("hasAuthority('ROLE_CADASTRAR_LANCAMENTO')")
     public ResponseEntity<Lancamento> criar(@Validated @RequestBody Lancamento lancamento, HttpServletResponse response){
         Lancamento lancamentoSalvo = lancamentoService.salvar(lancamento);
 
@@ -52,6 +61,7 @@ public class LancamentoResource {
     }
 
     @GetMapping("/{codigo}")
+    @PreAuthorize("permitAll()")
     public ResponseEntity<Lancamento> buscarPeloCodigo(@PathVariable Long codigo){
         return lancamentoRepository.findById(codigo)
                 .map(ResponseEntity::ok)
@@ -59,6 +69,7 @@ public class LancamentoResource {
     }
 
 	@DeleteMapping("/{codigo}")
+	@PreAuthorize("hasAuthority('ROLE_REMOVER_LANCAMENTO')")
 	public ResponseEntity<Void> remover(@PathVariable Long codigo) {
 		Optional<Lancamento> lancamentoOptional = lancamentoRepository.findById(codigo);
 		if (lancamentoOptional.isPresent()) {
